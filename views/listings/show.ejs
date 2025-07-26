@@ -157,9 +157,11 @@
                         </div>
 
                         <!-- Delete Comment Button -->
-                        <form class="mb-3 mt-1" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                            <button class="btn btn-sm btn-outline-dark">Delete</button>
-                        </form>
+                        <% if(currUser && currUser._id.equals(review.author._id)) { %>
+                            <form class="mb-3 mt-1" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                <button class="btn btn-sm btn-outline-dark">Delete</button>
+                            </form>
+                        <% } %>
                     </div>
                 <% } %>
             </div>
