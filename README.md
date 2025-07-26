@@ -151,7 +151,7 @@ RoamEase/
 
 ---
 
-## ?? Getting Started
+## Getting Started
 
 ### 📦 Prerequisites
 - [Node.js](https://nodejs.org/) (v18.x or later)
