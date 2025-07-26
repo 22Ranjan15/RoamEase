@@ -82,6 +82,8 @@ RoamEase/
 |-- middleware.js
 |-- package.json
 |-- schema.js
+|-- README.md
+|-- LICENSE
 |
 |-- controllers/
 |   |-- listings.js
