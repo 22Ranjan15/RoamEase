@@ -1,0 +1,78 @@
+/* Stylish Responsive Footer */
+.f-info {
+    background-color: #f4f4f4;
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+    padding: 1.2rem 0 0.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    min-height: 3.5rem;
+}
+
+.f-info-socials,
+.f-info-brand,
+.f-info-links {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.f-info-socials {
+    gap: 1.2rem;
+}
+
+.f-info-socials a {
+    color: #fe424d;
+    font-size: 1.4rem;
+    transition: color 0.2s;
+}
+.f-info-socials a:hover {
+    color: #e03946;
+}
+
+.f-info-brand {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #222;
+    font-size: 1rem;
+    justify-content: center;
+}
+
+.f-info-links {
+    gap: 0.8rem;
+}
+
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+.f-info-links a:hover {
+    color: #fe424d;
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .f-info {
+        flex-direction: column;
+        gap: 0.3rem;
+        padding: 0.8rem 0 0.3rem 0;
+        min-height: 2.5rem;
+    }
+    .f-info-brand {
+        font-size: 0.95rem;
+    }
+    .f-info-socials a {
+        font-size: 1.1rem;
+    }
+    .f-info-links a {
+        font-size: 0.95rem;
+    }
+}

@@ -1,0 +1,253 @@
+/* Base Navbar Styles */
+.brand-logo .fa-compass,
+.brand-logo .brand-text {
+    font-size: 1.75rem;
+    color: #fe424d;
+}
+
+.navbar-brand:hover {
+    color: #e03946 !important;
+}
+
+/* Search Input Styles */
+.search-container {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-input {
+    border-radius: 25px;
+    border: 2px solid #e9ecef;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    padding-right: 2.2rem;
+}
+
+.search-input:focus {
+    border-color: #fe424d !important;
+    box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.25);
+    outline: none;
+}
+
+.search-btn {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fe424d;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.search-btn:hover {
+    background: #e03946;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.search-suggestions {
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 0.5rem;
+}
+
+.suggestion-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* Mobile Search Styles */
+.mobile-search-input {
+    border-radius: 25px;
+    border: 2px solid #e9ecef;
+    background: #f8f9fa;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.mobile-search-input:focus {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.25);
+    background: #ffffff;
+    outline: none;
+}
+
+.mobile-search-btn {
+    border: none;
+    background: #fe424d;
+    padding: 0.75rem 1.25rem;
+    border-radius: 25px;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.mobile-search-btn:hover {
+    background: #e03946;
+    transform: scale(1.05);
+}
+
+/* Navbar scrollable styles */
+.navbar-nav-scroll {
+    max-height: var(--bs-scroll-height, 75px);
+    overflow-y: auto;
+}
+
+/* Navigation Styles */
+.hover-primary:hover {
+    color: #fe424d !important;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+    background: #fe424d !important;
+}
+
+/* Responsive Breakpoints */
+
+/* Extra Large Screens (1200px+) */
+@media (min-width: 1200px) {
+    .search-container {
+        max-width: 500px;
+    }
+    
+    .search-section input {
+        font-size: 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.75rem;
+    }
+}
+
+/* Large Screens (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .search-container {
+        max-width: 400px;
+    }
+    
+    .search-container-wrapper {
+        margin: 0 0.5rem;
+    }
+    
+    .user-avatar + span {
+        display: none;
+    }
+}
+
+/* Medium Screens (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .search-container {
+        max-width: 350px;
+    }
+    
+    .search-section input {
+        font-size: 0.85rem;
+    }
+    
+    .search-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .navbar-collapse {
+        margin-top: 1rem;
+    }
+}
+
+/* Small Screens (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .mobile-search-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .mobile-search-btn {
+        padding: 0.6rem 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+}
+
+/* Extra Small Screens (below 576px) */
+@media (max-width: 575px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .navbar-brand i {
+        font-size: 1rem;
+    }
+    
+    .mobile-search-input {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .mobile-search-btn {
+        padding: 0.5rem 0.8rem;
+    }
+    
+    .mobile-search {
+        border-radius: 20px;
+    }
+    
+    .btn-sm {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+/* Navbar Toggle Improvements */
+.navbar-toggler {
+    border: none;
+    padding: 0.25rem 0.5rem;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* Prevent layout shift */
+.navbar-collapse {
+    transition: none;
+}
+
+/* Ensure proper spacing */
+@media (max-width: 991px) {
+    .navbar-nav {
+        text-align: center;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 1rem;
+    }
+}

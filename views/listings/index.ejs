@@ -1,0 +1,791 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .filter-container {
+        position: relative;
+        margin: 1rem auto;
+        max-width: 1200px;
+        width: 90%;
+    }
+
+    .filter-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 20px;
+        padding: 0 30px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .filters-section {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        position: relative;
+        max-width: 75%;
+    }
+
+    .scroll-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .scroll-btn:hover {
+        background: #f8f9fa;
+        border-color: #fe424d;
+        color: #fe424d;
+    }
+
+    .scroll-btn.left {
+        left: 8px;
+    }
+
+    .scroll-btn.right {
+        right: 8px;
+    }
+
+    .scroll-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        background: #f5f5f5;
+    }
+
+    .scroll-btn i {
+        font-size: 0.8rem;
+    }
+
+    #filters {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        padding: 12px 0;
+        white-space: nowrap;
+    }
+
+    .filter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0.7;
+        text-decoration: none;
+        color: inherit;
+        padding: 0.5rem 0.6rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        min-width: 60px;
+        flex-shrink: 0;
+        border: 1px solid transparent;
+    }
+    
+    .filter:hover {
+        opacity: 1;
+        cursor: pointer;
+        background-color: #f8f9fa;
+        transform: translateY(-1px);
+        text-decoration: none;
+        color: inherit;
+        border-color: #e9ecef;
+    }
+    
+    .filter.active {
+        opacity: 1;
+        background-color: #fe424d;
+        color: white;
+        border-color: #fe424d;
+    }
+    
+    .filter p {
+        font-size: 0.65rem;
+        margin: 0.2rem 0 0 0;
+        font-weight: 600;
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    .filter i {
+        font-size: 1rem;
+        margin-bottom: 0.1rem;
+    }
+
+    /* Clear Filter Styling */
+    .clear-filter {
+        background-color: #ffc107;
+        color: #212529;
+        opacity: 1;
+        border-color: #ffc107;
+    }
+
+    .clear-filter:hover {
+        background-color: #e0a800;
+        border-color: #e0a800;
+        color: #212529;
+        transform: translateY(-1px);
+    }
+
+    /* Hide scrollbar */
+    #filters::-webkit-scrollbar {
+        display: none;
+    }
+    
+    #filters {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* Results Info Styling */
+    .results-info {
+        background: linear-gradient(135deg, #fe424d 0%, #ff6b6b 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        margin: 1rem 0;
+        border: none;
+        box-shadow: 0 4px 15px rgba(254, 66, 77, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .results-info::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.1) 75%), 
+                    linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.1) 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .results-info .category-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: capitalize;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .results-info .category-icon {
+        background: rgba(255,255,255,0.2);
+        padding: 0.3rem;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .results-info .results-count {
+        background: rgba(255,255,255,0.15);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-left: 1rem;
+        display: inline-block;
+    }
+
+    .no-results {
+        background: linear-gradient(135deg, #6c757d 0%, #868e96 100%);
+    }
+
+    /* No Listings Found Styling */
+    .not-listing {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 40vh;
+        width: 100%;
+    }
+
+    .no-listings-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 40vh;
+        width: 100%;
+    }
+
+    .no-listings-container {
+        text-align: center;
+        padding: 4rem 2rem;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 20px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .no-listings-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(254, 66, 77, 0.05) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.3; }
+        50% { transform: scale(1.1); opacity: 0.1; }
+    }
+
+    .no-listings-icon {
+        font-size: 4rem;
+        color: #fe424d;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .no-listings-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .no-listings-message {
+        font-size: 1.1rem;
+        color: #6c757d;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        position: relative;
+        z-index: 2;
+    }
+
+    .no-listings-btn {
+        background: linear-gradient(135deg, #fe424d 0%, #ff6b6b 100%);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 15px rgba(254, 66, 77, 0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    .no-listings-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(254, 66, 77, 0.4);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Tax Toggle Styling */
+    .vertical-divider {
+        width: 2px;
+        height: 50px;
+        background: linear-gradient(to bottom, transparent, rgba(233, 236, 239, 0.8) 20%, rgba(233, 236, 239, 0.8) 80%, transparent);
+        margin: 0 1rem;
+        flex-shrink: 0;
+    }
+
+    .tax-toggle-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        white-space: nowrap;
+        min-width: 200px;
+    }
+
+    .tax-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .tax-toggle .form-check-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #495057;
+        margin: 0;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .tax-toggle .form-check-input {
+        width: 2rem;
+        height: 1rem;
+        background-color: #e9ecef;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tax-toggle .form-check-input:checked {
+        background-color: #fe424d;
+        border-color: #fe424d;
+    }
+
+    .tax-toggle .form-check-input:focus {
+        border-color: #fe424d;
+        box-shadow: 0 0 0 0.2rem rgba(254, 66, 77, 0.25);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .tax-toggle-container {
+            min-width: 180px;
+        }
+        
+        .tax-toggle .form-check-label {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .filters-section {
+            max-width: 70%;
+        }
+        
+        .tax-toggle-container {
+            min-width: 160px;
+            padding: 0.4rem 0.8rem;
+        }
+        
+        .tax-toggle .form-check-label {
+            font-size: 0.65rem;
+        }
+        
+        .tax-toggle .form-check-input {
+            width: 1.8rem;
+            height: 0.9rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .filter-wrapper {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .filters-section {
+            max-width: 100%;
+        }
+
+        .vertical-divider {
+            display: none;
+        }
+        
+        .tax-toggle-container {
+            margin-left: 0;
+            width: 100%;
+            max-width: 400px;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            min-width: auto;
+        }
+        
+        .tax-toggle .form-check-label {
+            font-size: 0.85rem;
+        }
+        
+        .tax-toggle .form-check-input {
+            width: 2.2rem;
+            height: 1.1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .tax-toggle-container {
+            max-width: 100%;
+            padding: 0.7rem 1rem;
+        }
+        
+        .tax-toggle .form-check-label {
+            font-size: 0.8rem;
+        }
+        
+        .tax-toggle {
+            gap: 0.5rem;
+        }
+    }
+</style>
+
+<!-- Filters Section -->
+<div class="filter-container">
+    <div class="filter-wrapper">
+        <div class="filters-section">
+            <button class="scroll-btn left" id="scrollLeft" onclick="scrollFilters('left')">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            
+            <div id="filters">
+                <!-- All/Clear Filter -->
+                <a href="/listings" class="filter <%= !selectedCategory ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-list"></i></div>
+                    <p>All</p>
+                </a>
+
+                <!-- Clear Filters Option -->
+                <% if (selectedCategory) { %>
+                    <a href="/listings" class="filter clear-filter">
+                        <div><i class="fa-solid fa-times-circle"></i></div>
+                        <p>Clear</p>
+                    </a>
+                <% } %>
+
+                <!-- Trending -->
+                <a href="/listings?category=trending" class="filter <%= selectedCategory === 'trending' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-fire"></i></div>
+                    <p>Trending</p>
+                </a>
+
+                <!-- Rooms -->
+                <a href="/listings?category=rooms" class="filter <%= selectedCategory === 'rooms' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-bed"></i></div>
+                    <p>Rooms</p>
+                </a>
+
+                <!-- Iconic Cities -->
+                <a href="/listings?category=iconic-cities" class="filter <%= selectedCategory === 'iconic-cities' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-mountain-city"></i></div>
+                    <p>Iconic Cities</p>
+                </a>
+
+                <!-- Mountains -->
+                <a href="/listings?category=mountains" class="filter <%= selectedCategory === 'mountains' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-mountain"></i></div>
+                    <p>Mountains</p>
+                </a>
+
+                <!-- Castles -->
+                <a href="/listings?category=castles" class="filter <%= selectedCategory === 'castles' ? 'active' : '' %>">
+                    <div><i class="fa-brands fa-fort-awesome"></i></div>
+                    <p>Castles</p>
+                </a>
+
+                <!-- Arctic -->
+                <a href="/listings?category=arctic" class="filter <%= selectedCategory === 'arctic' ? 'active' : '' %>">
+                    <div><i class="fa-regular fa-snowflake"></i></div>
+                    <p>Arctic</p>
+                </a>
+
+                <!-- Camping -->
+                <a href="/listings?category=camping" class="filter <%= selectedCategory === 'camping' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-campground"></i></div>
+                    <p>Camping</p>
+                </a>
+
+                <!-- Farms -->
+                <a href="/listings?category=farms" class="filter <%= selectedCategory === 'farms' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-cow"></i></div>
+                    <p>Farms</p>
+                </a>
+
+                <!-- Amazing Pools -->
+                <a href="/listings?category=amazing-pools" class="filter <%= selectedCategory === 'amazing-pools' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-person-swimming"></i></div>
+                    <p>Amazing Pools</p>
+                </a>
+
+                <!-- Beach -->
+                <a href="/listings?category=beach" class="filter <%= selectedCategory === 'beach' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-umbrella-beach"></i></div>
+                    <p>Beach</p>
+                </a>
+
+                <!-- Tropical -->
+                <a href="/listings?category=tropical" class="filter <%= selectedCategory === 'tropical' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-hurricane"></i></i></div>
+                    <p>Tropical</p>
+                </a>
+
+                <!-- Tiny Homes -->
+                <a href="/listings?category=tiny-homes" class="filter <%= selectedCategory === 'tiny-homes' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-home"></i></div>
+                    <p>Tiny Homes</p>
+                </a>
+
+                <!-- Lakefront -->
+                <a href="/listings?category=lakefront" class="filter <%= selectedCategory === 'lakefront' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-water"></i></div>
+                    <p>Lakefront</p>
+                </a>
+
+                <!-- Ski In/Out -->
+                <a href="/listings?category=ski-in-out" class="filter <%= selectedCategory === 'ski-in-out' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-skiing"></i></div>
+                    <p>Ski In/Out</p>
+                </a>
+
+                <!-- Islands -->
+                <a href="/listings?category=islands" class="filter <%= selectedCategory === 'islands' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-earth-oceania"></i></div>
+                    <p>Islands</p>
+                </a>
+
+                <!-- Desert -->
+                <a href="/listings?category=desert" class="filter <%= selectedCategory === 'desert' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-sun"></i></div>
+                    <p>Desert</p>
+                </a>
+
+                <!-- Luxe -->
+                <a href="/listings?category=luxe" class="filter <%= selectedCategory === 'luxe' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-gem"></i></div>
+                    <p>Luxe</p>
+                </a>
+
+                <!-- Treehouses -->
+                <a href="/listings?category=treehouses" class="filter <%= selectedCategory === 'treehouses' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-tree"></i></div>
+                    <p>Treehouses</p>
+                </a>
+
+                <!-- Historical Homes -->
+                <a href="/listings?category=historical-homes" class="filter <%= selectedCategory === 'historical-homes' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-building-columns"></i></div>
+                    <p>Historical</p>
+                </a>
+
+                <!-- Countryside -->
+                <a href="/listings?category=countryside" class="filter <%= selectedCategory === 'countryside' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-wheat-awn"></i></div>
+                    <p>Countryside</p>
+                </a>
+
+                <!-- Vineyards -->
+                <a href="/listings?category=vineyards" class="filter <%= selectedCategory === 'vineyards' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-wine-bottle"></i></div>
+                    <p>Vineyards</p>
+                </a>
+
+                <!-- Off the Grid -->
+                <a href="/listings?category=off-the-grid" class="filter <%= selectedCategory === 'off-the-grid' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-power-off"></i></div>
+                    <p>Off Grid</p>
+                </a>
+
+                <!-- Surfing -->
+                <a href="/listings?category=surfing" class="filter <%= selectedCategory === 'surfing' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-person-swimming"></i></div>
+                    <p>Surfing</p>
+                </a>
+
+                <!-- National Parks -->
+                <a href="/listings?category=national-parks" class="filter <%= selectedCategory === 'national-parks' ? 'active' : '' %>">
+                    <div><i class="fa-solid fa-mountain-sun"></i></div>
+                    <p>National Parks</p>
+                </a>
+            </div>
+            
+            <button class="scroll-btn right" id="scrollRight" onclick="scrollFilters('right')">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Vertical Divider -->
+        <div class="vertical-divider"></div>
+
+        <!-- Tax Toggle Container -->
+        <div class="tax-toggle-container">
+            <div class="tax-toggle">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                <label class="form-check-label" for="switchCheckDefault">Include taxes</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function scrollFilters(direction) {
+        const container = document.getElementById('filters');
+        const scrollAmount = 300;
+        
+        if (direction === 'left') {
+            container.scrollLeft -= scrollAmount;
+        } else {
+            container.scrollLeft += scrollAmount;
+        }
+        
+        updateScrollButtons();
+    }
+
+    function updateScrollButtons() {
+        const container = document.getElementById('filters');
+        const leftBtn = document.getElementById('scrollLeft');
+        const rightBtn = document.getElementById('scrollRight');
+        
+        // Check if we can scroll left
+        leftBtn.disabled = container.scrollLeft <= 0;
+        
+        // Check if we can scroll right
+        rightBtn.disabled = container.scrollLeft >= (container.scrollWidth - container.clientWidth);
+    }
+
+    // Initialize scroll buttons on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateScrollButtons();
+        
+        // Update buttons when scrolling
+        document.getElementById('filters').addEventListener('scroll', updateScrollButtons);
+        
+        // Update buttons on window resize
+        window.addEventListener('resize', updateScrollButtons);
+    });
+
+    // Switch for displaying total after taxes
+    let taxSwitch = document.getElementById('switchCheckDefault');
+    
+    // Store original prices when page loads
+    let originalPrices = {};
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.listing-card .card-text').forEach((card, index) => {
+            let cardHTML = card.innerHTML;
+            let priceMatch = cardHTML.match(/(\d[\d,]*)/);
+            if (priceMatch) {
+                originalPrices[index] = priceMatch[0];
+            }
+        });
+    });
+    
+    taxSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            // Logic to display total after taxes (GST included)
+            document.querySelectorAll('.listing-card .card-text').forEach((card, index) => {
+                let cardHTML = card.innerHTML;
+                let titleMatch = cardHTML.match(/<b>(.*?)<\/b>/);
+                let title = titleMatch ? titleMatch[0] : '';
+                
+                if (originalPrices[index]) {
+                    let price = parseFloat(originalPrices[index].replace(/,/g, ''));
+                    let totalWithTax = (price * 1.18).toLocaleString("en-IN");
+                    card.innerHTML = `${title} <br>&#x20B9;${totalWithTax} /night (incl. 18% GST)`;
+                }
+            });
+        } else {
+            // Logic to revert to original price display (with GST note)
+            document.querySelectorAll('.listing-card .card-text').forEach((card, index) => {
+                let cardHTML = card.innerHTML;
+                let titleMatch = cardHTML.match(/<b>(.*?)<\/b>/);
+                let title = titleMatch ? titleMatch[0] : '';
+                
+                if (originalPrices[index]) {
+                    card.innerHTML = `${title} <br>&#x20B9;${originalPrices[index]} /night <i style="font-size: 0.75rem; color: #6c757d;">+ 18% GST</i>`;
+                }
+            });
+        }
+    });
+</script>
+
+<!-- Results Info -->
+<% if (selectedCategory) { %>
+    <div class="results-info <%= allListings.length === 0 ? 'no-results' : '' %>">
+        <div class="category-name">
+            <span class="category-icon">
+                <i class="fa-solid fa-filter"></i>
+            </span>
+            <%= selectedCategory.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+            <span class="results-count">
+                <%= allListings.length %> <%= allListings.length === 1 ? 'listing' : 'listings' %>
+            </span>
+        </div>
+        <% if (allListings.length === 0) { %>
+            <div style="margin-top: 0.5rem; opacity: 0.9;">
+                <i class="fa-solid fa-info-circle"></i> No properties match this category. Try browsing other categories!
+            </div>
+        <% } %>
+    </div>
+<% } %>
+
+<!-- Listings Section -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 not-listing">
+    <% if (allListings.length === 0) { %>
+        <div class="no-results-container text-center py-4 d-flex flex-column align-items-center justify-content-center"
+            style="background: linear-gradient(135deg, #868e96 0%, #adb5bd 100%); border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); min-height: 40vh; margin-bottom:2rem;">
+            <div class="mb-3">
+                <i class="fa-solid fa-search" style="font-size: 2.5rem; color: #495057;"></i>
+            </div>
+            <h3 class="mb-2 fw-bold" style="color:#343a40; font-size:1.3rem;">No Results Found</h3>
+            <p class="mb-3" style="color:#495057; font-size:0.95rem; max-width:500px; margin:auto;">
+                <% if (selectedCategory) { %>
+                    We couldn't find any properties in the "<%= selectedCategory.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) %>" category.
+                    Try exploring other categories or browse all available listings.
+                <% } else { %>
+                    It looks like there are no listings available at the moment. Check back later for new properties!
+                <% } %>
+            </p>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="/listings" class="no-listings-btn">
+                    Explore All Listings
+                </a>
+            </div>
+        </div>
+    <% } else { %>
+    <!-- Results Grid -->
+        <% for (let listing of allListings) { %>
+            <a href="/listings/<%= listing._id %>" class="listing-link">
+                <div class="card listing-card col">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><%= listing.title %></b> <br>
+                            <% if (listing.price) { %>
+                                &#x20B9;<%= listing.price.toLocaleString("en-IN") %> /night 
+                                <i style="font-size: 0.75rem; color: #6c757d;">+ 18% GST</i>
+                            <% } else { %>
+                                Price not available
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        <% } %>
+        
+        <!-- Pagination could be added here if needed -->
+        <% if (allListings.length >= 12) { %>
+            <div class="text-center mt-4">
+                <p class="text-muted">Showing all <%= allListings.length %> results</p>
+            </div>
+        <% } %>
+    <% } %>
+</div>

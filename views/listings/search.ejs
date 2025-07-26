@@ -1,0 +1,210 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- Search Results Header -->
+<% if (searchResults && searchResults.query) { %>
+    <div class="results-info <%= allListings.length === 0 ? 'no-results' : '' %>">
+        <div class="category-name">
+            <span class="category-icon">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            Search Results
+            <span class="results-count">
+                <%= allListings.length %> <%= allListings.length === 1 ? 'property' : 'properties' %>
+            </span>
+            &nbsp;
+            &nbsp;
+            <span class="results-query" style="font-size:1rem;"></span>
+                for "<%= searchResults.query %>"
+            </span>
+        </div>
+    </div>
+<% } %>
+
+<!-- Search Results -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 not-listing justify-content-center">
+    <% if (allListings.length === 0) { %>
+        <div class="no-results-container text-center py-4 d-flex flex-column align-items-center justify-content-center" style="background: linear-gradient(135deg, #868e96 0%, #adb5bd 100%); border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); min-height: 40vh; margin-bottom:2rem;">
+            <div class="mb-3">
+                <i class="fa-solid fa-search" style="font-size: 2.5rem; color: #495057;"></i>
+            </div>
+            <h3 class="mb-2 fw-bold" style="color:#343a40; font-size:1.3rem;">No Results Found</h3>
+            <p class="mb-3" style="color:#495057; font-size:0.95rem; max-width:500px; margin:auto;">We couldn't find any properties matching "<%= searchResults.query %>". Try searching with different keywords or browse our categories.</p>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="/listings" class="no-listings-btn">
+                    Explore All Listings
+                </a>
+            </div>
+        </div>
+    <% } else { %>
+        <!-- Results Grid -->
+        <% for (let listing of allListings) { %>
+            <div class="col d-flex justify-content-center mb-4">
+                <a href="/listings/<%= listing._id %>" class="listing-link" style="width:100%;max-width:350px;">
+                    <div class="card listing-card h-100">
+                        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+                        <div class="card-img-overlay"></div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b><%= listing.title %></b> <br>
+                                <% if (listing.price) { %>
+                                    &#x20B9;<%= listing.price.toLocaleString("en-IN") %> /night 
+                                    <i style="font-size: 0.75rem; color: #6c757d;">+ 18% GST</i>
+                                <% } else { %>
+                                    Price not available
+                                <% } %>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% } %>
+
+        <!-- Pagination could be added here if needed -->
+        <% if (allListings.length >= 12) { %>
+            <div class="text-center mt-4">
+                <p class="text-muted">Showing all <%= allListings.length %> results</p>
+            </div>
+        <% } %>
+    <% } %>
+</div>
+
+<style>
+    .results-info {
+        background: #fff;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        margin: 1rem 0;
+        border: none;
+        box-shadow: 0 4px 15px rgba(254, 66, 77, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .results-info.no-results {
+        background: linear-gradient(135deg, #868e96 0%, #adb5bd 100%);
+        color: #fff;
+    }
+    .category-name {
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    .category-icon {
+        display: inline-block;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fe424d;
+        text-align: center;
+        line-height: 2.5rem;
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+    }
+    .results-count {
+        background: #fe424d;
+        color: #fff;
+        padding: 0.3rem 0.8rem;
+        border-radius: 12px;
+        margin-left: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    .search-results-header {
+        display: none;
+    }
+    
+    .no-results-container {
+        min-height: 40vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        background: linear-gradient(135deg, #868e96 0%, #adb5bd 100%);
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+    .no-results-container i {
+        font-size: 2.5rem;
+        color: #495057;
+        margin-bottom: 1rem;
+    }
+    .no-results-container h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #343a40;
+        margin-bottom: 0.7rem;
+    }
+    .no-results-container p {
+        font-size: 0.95rem;
+        color: #495057;
+        margin-bottom: 1.2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
+    }
+    .no-results-container .btn {
+        background: #fe424d;
+        color: #fff;
+        padding: 0.5rem 1.2rem;
+        border-radius: 20px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(254, 66, 77, 0.15);
+        border: none;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+    }
+    .no-results-container .btn:hover {
+        background: #e03946;
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(254, 66, 77, 0.18);
+    }
+    .no-listings-btn {
+        background: linear-gradient(135deg, #fe424d 0%, #ff6b6b 100%);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 15px rgba(254, 66, 77, 0.3);
+        position: relative;
+        z-index: 2;
+    }
+    .no-listings-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(254, 66, 77, 0.4);
+        text-decoration: none;
+        color: white;
+    }
+    @media (max-width: 992px) {
+        .results-info {
+            text-align: center;
+            padding: 1rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .results-info {
+            font-size: 1rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .results-info {
+            font-size: 0.95rem;
+            padding: 0.7rem;
+        }
+        .no-results-container {
+            padding: 1rem 0.3rem;
+        }
+    }
+</style>
