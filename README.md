@@ -254,6 +254,6 @@ Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information
 
 ## 📬 Contact
 **Ranjan**  
-[GitHub](https://github.com/yourusername) | [LinkedIn](https://linkedin.com/in/yourusername) | [Gmail](ranjandasbd22@gmail.com)
+[GitHub](https://github.com/22Ranjan15) | [LinkedIn](https://www.linkedin.com/in/dasranjan) | [Gmail](ranjandasbd22@gmail.com)
 
 ---
